@@ -7,16 +7,17 @@
 
 import Foundation
 import UIKit
+
 enum PretendardWeight: String {
-    case black = "Black"
-    case bold = "Bold"
-    case extraBold = "ExtraBold"
-    case extraLight = "ExtraLight"
-    case light = "Light"
-    case medium = "Medium"
-    case regular = "Regular"
-    case semiBold = "SemiBold"
-    case thin = "Thin"
+    case black = "Pretendard-Black"
+    case bold = "Pretendard-Bold"
+    case extraBold = "Pretendard-ExtraBold"
+    case extraLight = "Pretendard-ExtraLight"
+    case light = "Pretendard-Light"
+    case medium = "Pretendard-Medium"
+    case regular = "Pretendard-Regular"
+    case semiBold = "Pretendard-SemiBold"
+    case thin = "Pretendard-Thin"
 }
 
 extension UIFont {
