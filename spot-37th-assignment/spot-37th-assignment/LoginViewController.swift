@@ -1,0 +1,15 @@
+//
+//  LoginViewController.swift
+//  spot-37th-assignment
+//
+//  Created by 어재선 on 10/30/25.
+//
+
+import UIKit
+
+final class LoginViewController: UIViewController {
+    override func viewDidLoad() {
+    
+        super.viewDidLoad()
+        }
+}

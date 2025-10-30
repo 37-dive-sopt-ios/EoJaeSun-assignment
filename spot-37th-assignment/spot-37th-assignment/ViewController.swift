@@ -6,14 +6,53 @@
 //
 
 import UIKit
+import SnapKit
+import Then
 
-class ViewController: UIViewController {
+final class ViewController: UIViewController {
 
+    private lazy var loginButton = UIButton()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view.
+        setHierarchy()
+        setStyle()
+        setLayout()
+        
     }
+    
+}
 
-
+extension ViewController {
+    
+    func setStyle() {
+        loginButton.do {
+            $0.setTitle("로그인하기", for: .normal)
+            $0.setTitleColor(.baeminWhite, for: .normal)
+            $0.backgroundColor = .baeminMint300
+            $0.titleLabel?.font = .head_b_24
+            $0.addTarget(self, action: #selector(loginButtonDidTap), for: .touchUpInside)
+        }
+    }
+    func setHierarchy() {
+        self.view.addSubview(loginButton)
+    }
+    
+    func setLayout() {
+        self.view.backgroundColor = .baeminWhite
+        
+        self.loginButton.snp.makeConstraints {
+            $0.center.equalToSuperview()
+            $0.width.equalTo(280)
+            $0.height.equalTo(50)
+            
+        }
+        
+    }
+    
+    @objc func loginButtonDidTap() {
+        let loginViewController = LoginViewController()
+        self.navigationController?.pushViewController(loginViewController, animated: true)
+    }
 }
 
