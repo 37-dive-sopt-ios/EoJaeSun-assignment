@@ -33,6 +33,7 @@ final class WelcomeViewController: UIViewController {
 extension WelcomeViewController {
     func setStyle() {
         self.view.backgroundColor = .baeminWhite
+        self.navigationItem.title = "대체 뼈짐 누가 시켰어"
         
         self.imageView.do {
             $0.image = UIImage(named: "baemin-image1")

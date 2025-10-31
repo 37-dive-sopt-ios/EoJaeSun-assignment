@@ -32,7 +32,7 @@ final class LoginViewController: UIViewController {
 extension LoginViewController {
     func setStyle() {
         self.view.backgroundColor = .white
-        
+        self.navigationItem.title = "이메일 또는 아이디로 계속"
         self.emailTextField.do {
             $0.delegate = self
             $0.placeholder = "이메일 아이디"
@@ -119,7 +119,6 @@ extension LoginViewController {
         
         self.emailTextField.snp.makeConstraints {
             $0.top.equalToSuperview().offset(101)
-            
             $0.leading.trailing.equalToSuperview().inset(16)
             $0.width.equalTo(343)
             $0.height.equalTo(46)
