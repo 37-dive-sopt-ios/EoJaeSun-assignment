@@ -29,9 +29,10 @@ extension ViewController {
         loginButton.do {
             $0.setTitle("로그인하기", for: .normal)
             $0.setTitleColor(.baeminWhite, for: .normal)
-            $0.backgroundColor = .baeminMint300
+            $0.backgroundColor = .baeminMint500
             $0.titleLabel?.font = .head_b_24
             $0.addTarget(self, action: #selector(loginButtonDidTap), for: .touchUpInside)
+            $0.layer.cornerRadius = 4
         }
     }
     func setHierarchy() {
@@ -43,8 +44,8 @@ extension ViewController {
         
         self.loginButton.snp.makeConstraints {
             $0.center.equalToSuperview()
-            $0.width.equalTo(280)
-            $0.height.equalTo(50)
+            $0.width.equalTo(343)
+            $0.height.equalTo(46)
             
         }
         
