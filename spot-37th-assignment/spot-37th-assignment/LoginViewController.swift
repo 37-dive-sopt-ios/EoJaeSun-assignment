@@ -124,6 +124,9 @@ extension LoginViewController {
         if isValidEmail(email: emailText) {
             if !emailText.isEmpty && !passwordText.isEmpty {
                 let welcomeViewController = WelcomeViewController()
+                
+                guard let name = emailText.split(separator: "@").first else { return }
+                welcomeViewController.setLabelText(name: String(name))
                 self.navigationController?.pushViewController(welcomeViewController, animated: true)
             }
         } else {
