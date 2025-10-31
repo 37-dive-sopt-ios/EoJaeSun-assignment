@@ -15,7 +15,9 @@ final class LoginViewController: UIViewController {
     private let passwordTextField = UITextField()
     private lazy var loginButton = UIButton()
     private lazy var selectAccountButton = UIButton()
-
+    private lazy var clearButton = UIButton()
+    private lazy var toggleButton = UIButton()
+    private let rightButtonView = UIStackView()
     override func viewDidLoad() {
     
         super.viewDidLoad()
@@ -41,9 +43,11 @@ extension LoginViewController {
             $0.addLeftPadding(10)
             $0.setPlaceholder(color: .baeminGray700)
             $0.tintColor = .baeminMint300
+            $0.clearButtonMode = .whileEditing
         }
         
         self.passwordTextField.do {
+
             $0.delegate = self
             $0.placeholder = "비밀번호"
             $0.font = .body_r_14
@@ -54,6 +58,8 @@ extension LoginViewController {
             $0.setPlaceholder(color: .baeminGray700)
             $0.isSecureTextEntry = true
             $0.tintColor = .baeminMint300
+            $0.rightView = rightButtonView
+            $0.rightViewMode = .whileEditing
         }
         
         self.loginButton.do {
@@ -71,11 +77,37 @@ extension LoginViewController {
             $0.setImage(UIImage(named: "baemin-ChevronRight"), for: .normal)
             $0.titleLabel?.font = .body_r_14
             $0.semanticContentAttribute = .forceRightToLeft
-
         }
+        
+        self.rightButtonView.do {
+            $0.axis = .horizontal
+            $0.spacing = 16
+            $0.alignment = .center
+            $0.layoutMargins = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 10)
+            $0.isLayoutMarginsRelativeArrangement = true
+            
+        }
+        self.clearButton.do {
+            $0.setImage(UIImage(named: "baemin-x-circle-fill"), for: .normal)
+            $0.tintColor = .baeminGray300
+            $0.frame = CGRect(x: 0, y: 0, width: 24, height: 24)
+            $0.isHidden = true
+            
+        }
+        
+        self.toggleButton.do {
+            $0.setImage(UIImage(named: "baemin-eye-slash"), for: .normal)
+            $0.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
+    
+        }
+        
     }
     
     func setHierarchy() {
+        
+        rightButtonView.addArrangedSubview(clearButton)
+        rightButtonView.addArrangedSubview(toggleButton)
+        
         [emailTextField,passwordTextField,loginButton, selectAccountButton,selectAccountButton].forEach {
             self.view.addSubview($0)
         }
@@ -113,6 +145,7 @@ extension LoginViewController {
             $0.height.equalTo(14)
         }
         
+        
     }
     
     @objc func loginButtonDidTap() {
@@ -137,8 +170,6 @@ extension LoginViewController {
 
             present(alert, animated: true, completion: nil)
         }
-        
-        
     }
     
     func isValidEmail(email: String) -> Bool {
@@ -146,6 +177,8 @@ extension LoginViewController {
         let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
         return emailPredicate.evaluate(with: email)
     }
+    
+
     
 }
 
@@ -163,12 +196,48 @@ extension LoginViewController: UITextFieldDelegate {
         }
     }
     
+    func textField(_ textField: UITextField, shouldChangeCharactersInRanges ranges: [NSValue], replacementString string: String) -> Bool {
+        
+        
+        if let passwordText = passwordTextField.text {
+            if passwordText.isEmpty {
+                clearButton.isHidden = true
+            } else {
+                clearButton.isHidden = false
+            }
+        }
+        return true
+    }
+    
+    
     func textFieldDidBeginEditing(_ textField: UITextField) {
         textField.layer.borderColor = UIColor.baeminBlack.cgColor
         textField.layer.borderWidth = 2
+        
+        if let passwordText = passwordTextField.text {
+            if passwordText.isEmpty {
+                clearButton.isHidden = true
+            } else {
+                clearButton.isHidden = false
+            }
+        }
+        
+       
+        
+        clearButton.addTarget(self, action: #selector(clearButtonAction), for: .touchUpInside)
+        toggleButton.addTarget(self, action: #selector(toggleButtonAction), for: .touchUpInside)
     }
     
-   
+    @objc func clearButtonAction() {
+        passwordTextField.text =  ""
+        passwordTextField.becomeFirstResponder()
+    }
+    
+    @objc func toggleButtonAction() {
+        passwordTextField.isSecureTextEntry.toggle()
+        toggleButton.setImage(UIImage(named: passwordTextField.isSecureTextEntry ? "baemin-eye-slash" : "baemin-eye"), for: .normal)
+        passwordTextField.becomeFirstResponder()
+    }
 }
 
 #Preview {
