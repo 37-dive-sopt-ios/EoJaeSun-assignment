@@ -60,7 +60,7 @@ extension WelcomeViewController {
             $0.setTitleColor(.baeminWhite, for: .normal)
             $0.backgroundColor = .baeminMint500
             $0.titleLabel?.font = .head_b_18
-            $0.addTarget(self, action: #selector(backButtonDidTap), for: .touchUpInside)
+            $0.addTarget(self, action: #selector(homeButtonDidTap), for: .touchUpInside)
             $0.layer.cornerRadius = 4
         }
         
@@ -97,11 +97,15 @@ extension WelcomeViewController {
         }
     }
     
-    @objc func backButtonDidTap() {
-        if self.navigationController == nil {
-            self.dismiss(animated: true)
-        } else {
-            self.navigationController?.popViewController(animated: true)
+    @objc func homeButtonDidTap() {
+        let mainVC = UINavigationController(rootViewController: MainViewController())
+           
+        if let window = view.window {
+            window.rootViewController = mainVC
+            UIView.transition(with: window,
+                              duration: 0.3,
+                              options: .transitionFlipFromRight,
+                              animations: nil)
         }
     }
     
