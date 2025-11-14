@@ -1,5 +1,5 @@
 //
-//  MainNavigationbarView.swift
+//  BaeminFeedNavigationbarCell.swift
 //  spot-37th-assignment
 //
 //  Created by 어재선 on 11/14/25.
@@ -10,7 +10,9 @@ import UIKit
 import Then
 import SnapKit
 
-final class MainNavigationbarView: BaseView {
+final class BaeminFeedNavigationbarCell: BaseCollectionViewCell {
+    
+    static let identifier: String = "BaeminFeedNavigationbarCell"
     
     private let locationTextLabel = UILabel()
     private let locationImageView = UIImageView()
@@ -25,6 +27,7 @@ final class MainNavigationbarView: BaseView {
         
         locationStyle()
         rightButtonsStyle()
+        backgroundColor = .white
         
     }
     
@@ -33,6 +36,7 @@ final class MainNavigationbarView: BaseView {
         [locationStackView, rightButtonsStackView].forEach {
             addSubview($0)
         }
+        
     }
     
     override func setLayout() {

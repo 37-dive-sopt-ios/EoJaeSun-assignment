@@ -10,20 +10,22 @@ import UIKit
 import SnapKit
 import Then
 
-class MainView: BaseView {
+
+
+class BaeminFeedView: BaseView {
 
     private let gradientBackgroundView = UIView()
     let gradientLayer = CAGradientLayer()
     
+    lazy var baeminFeedCollectionView = UICollectionView( frame: .zero,
+                                                          collectionViewLayout: flowLayout)
+    private let flowLayout = CustomCollectionViewFlowLayout(stickyIndexPath: IndexPath(item: 0, section: 1))
     
-    private let navgationBar = MainNavigationbarView()
-    private let serachbar = CustomSearchView()
     
-    
-    override func setUI() {
-        addSubview(gradientBackgroundView)
         
-        [navgationBar,serachbar].forEach {
+    override func setUI() {
+        
+        [gradientBackgroundView, baeminFeedCollectionView ].forEach {
             addSubview($0)
             
         }
@@ -37,23 +39,30 @@ class MainView: BaseView {
             UIColor.baeminWhite.cgColor,
             UIColor.baeminMint300.cgColor
         ]
+        
         gradientBackgroundView.layer.insertSublayer(gradientLayer, at: 0)
+        
+        flowLayout.do {
+            $0.scrollDirection = .vertical
+            $0.minimumInteritemSpacing = 0
+            $0.minimumLineSpacing = 0
+            $0.sectionHeadersPinToVisibleBounds = true
+        }
+        baeminFeedCollectionView.backgroundColor = .clear
+        
+        
     }
     
     override func setLayout() {
         
-        
-        navgationBar.snp.makeConstraints {
-            $0.leading.top.trailing.equalToSuperview().inset(16)
-        }
-        serachbar.snp.makeConstraints {
-            $0.top.equalTo(navgationBar.snp.bottom).offset(10)
-            $0.leading.trailing.equalToSuperview().inset(16)
-        }
+
         
         gradientBackgroundView.snp.makeConstraints {
-            $0.top.equalTo(serachbar.snp.bottom)
+            $0.top.equalToSuperview().offset(200)
             $0.leading.trailing.bottom.equalToSuperview()
+        }
+        baeminFeedCollectionView.snp.makeConstraints {
+            $0.edges.equalToSuperview()
         }
     }
     

@@ -10,7 +10,10 @@ import UIKit
 import Then
 import SnapKit
 
-final class CustomSearchView: BaseView {
+final class BaeminSearchBarCell: BaseCollectionViewCell {
+    
+    static let identifier: String = "CustomSearchView"
+    
     private let searchTextField = UITextField()
     private let searchButton = UIButton()
     private let rightsButtonView = UIStackView()
@@ -18,9 +21,12 @@ final class CustomSearchView: BaseView {
     
     override func setUI() {
         addSubview(searchTextField)
+        
     }
     
     override func setStyle() {
+        
+        backgroundColor = .baeminWhite
         searchButton.do {
             $0.setImage(UIImage(named: "baemin-SearchIcon"), for: .normal)
             $0.frame = CGRect(x: 0, y: 0, width: 24, height: 24)
