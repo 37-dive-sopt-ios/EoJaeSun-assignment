@@ -14,8 +14,7 @@ import Then
 
 class BaeminFeedView: BaseView {
 
-    private let gradientBackgroundView = UIView()
-    let gradientLayer = CAGradientLayer()
+    
     
     lazy var baeminFeedCollectionView = UICollectionView( frame: .zero,
                                                           collectionViewLayout: flowLayout)
@@ -25,7 +24,7 @@ class BaeminFeedView: BaseView {
         
     override func setUI() {
         
-        [gradientBackgroundView, baeminFeedCollectionView ].forEach {
+        [baeminFeedCollectionView ].forEach {
             addSubview($0)
             
         }
@@ -35,12 +34,7 @@ class BaeminFeedView: BaseView {
     }
     
     override func setStyle() {
-        gradientLayer.colors = [
-            UIColor.baeminWhite.cgColor,
-            UIColor.baeminMint300.cgColor
-        ]
         
-        gradientBackgroundView.layer.insertSublayer(gradientLayer, at: 0)
         
         flowLayout.do {
             $0.scrollDirection = .vertical
@@ -57,17 +51,11 @@ class BaeminFeedView: BaseView {
         
 
         
-        gradientBackgroundView.snp.makeConstraints {
-            $0.top.equalToSuperview().offset(200)
-            $0.leading.trailing.bottom.equalToSuperview()
-        }
+      
         baeminFeedCollectionView.snp.makeConstraints {
             $0.edges.equalToSuperview()
         }
     }
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        gradientLayer.frame = gradientBackgroundView.bounds
-    }
+   
 }

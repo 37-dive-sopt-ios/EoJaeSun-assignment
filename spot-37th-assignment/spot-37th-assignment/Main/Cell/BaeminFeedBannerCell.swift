@@ -18,14 +18,14 @@ final class BaeminFeedBannerCell: BaseCollectionViewCell {
     private let titleLabel = UILabel()
     private let titleRigitImageView = UIImageView()
     private let titleStackView = UIStackView()
-    
+    private let gradientBackgroundView = UIView()
+    private let gradientLayer = CAGradientLayer()
     
     
     override func setUI() {
-        [bmartImageView, titleStackView].forEach {
+        [gradientBackgroundView,bmartImageView, titleStackView].forEach {
             addSubview($0)
         }
-        
     }
     
     override func setStyle() {
@@ -50,6 +50,14 @@ final class BaeminFeedBannerCell: BaseCollectionViewCell {
             $0.addArrangedSubview(titleRigitImageView)
         }
         
+        gradientLayer.colors = [
+            UIColor.baeminWhite.cgColor,
+            UIColor.baeminWhite.cgColor,
+            UIColor.baeminMint300.cgColor,
+        ]
+        
+        gradientBackgroundView.layer.insertSublayer(gradientLayer, at: 0)
+        
     }
     
     override func setLayout() {
@@ -60,6 +68,14 @@ final class BaeminFeedBannerCell: BaseCollectionViewCell {
             $0.top.equalTo(bmartImageView.snp.bottom)
             $0.leading.equalTo(bmartImageView.snp.leading)
         }
+        gradientBackgroundView.snp.makeConstraints {
+            $0.top.equalToSuperview()
+            $0.leading.trailing.bottom.equalToSuperview()
+        }
+        
     }
-    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        gradientLayer.frame = bounds
+    }
 }
