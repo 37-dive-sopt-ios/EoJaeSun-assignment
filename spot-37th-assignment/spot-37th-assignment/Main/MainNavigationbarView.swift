@@ -87,7 +87,7 @@ final class MainNavigationbarView: BaseView {
         
         locationStackView.do {
             $0.axis = .horizontal
-            $0.spacing = 12
+            $0.spacing = 3
             $0.alignment = .center
             $0.isLayoutMarginsRelativeArrangement = true
             $0.layoutMargins = UIEdgeInsets(top: 4, left: 4, bottom: 4, right: 4)
