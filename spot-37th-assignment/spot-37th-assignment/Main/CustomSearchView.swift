@@ -21,15 +21,6 @@ final class CustomSearchView: BaseView {
     }
     
     override func setStyle() {
-        searchTextField.snp.makeConstraints {
-            $0.top.trailing.leading.equalToSuperview()
-            $0.centerY.equalToSuperview()
-            $0.height.equalTo(40)
-        }
-    }
-    
-    override func setLayout() {
-        
         searchButton.do {
             $0.setImage(UIImage(named: "baemin-SearchIcon"), for: .normal)
             $0.frame = CGRect(x: 0, y: 0, width: 24, height: 24)
@@ -55,5 +46,14 @@ final class CustomSearchView: BaseView {
             $0.isLayoutMarginsRelativeArrangement = true
             
         }
+    }
+    
+    override func setLayout() {
+        searchTextField.snp.makeConstraints {
+            $0.top.trailing.leading.equalToSuperview()
+            $0.centerY.equalToSuperview()
+            $0.height.equalTo(40)
+        }
+        
     }
 }
