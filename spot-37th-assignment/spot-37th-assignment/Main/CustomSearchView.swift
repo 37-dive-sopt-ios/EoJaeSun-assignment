@@ -18,7 +18,6 @@ final class CustomSearchView: BaseView {
     
     override func setUI() {
         addSubview(searchTextField)
-        
     }
     
     override func setStyle() {
@@ -41,7 +40,6 @@ final class CustomSearchView: BaseView {
             $0.rightView = rightsButtonView
             $0.rightViewMode = .always
             $0.backgroundColor = .baeminWhite
-            $0.borderStyle = .roundedRect
             $0.layer.cornerRadius = 20
             $0.layer.borderWidth = 1
             $0.layer.borderColor = UIColor.baeminBlack.cgColor
