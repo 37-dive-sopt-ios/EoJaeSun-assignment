@@ -31,7 +31,7 @@ class MainView: BaseView {
             $0.leading.top.trailing.equalToSuperview().inset(16)
         }
         serachbar.snp.makeConstraints {
-            $0.top.equalTo(navgationBar.snp.bottom)
+            $0.top.equalTo(navgationBar.snp.bottom).offset(10)
             $0.leading.trailing.equalToSuperview().inset(16)
         }
         
