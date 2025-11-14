@@ -34,13 +34,10 @@ class BaeminFeedView: BaseView {
     }
     
     override func setStyle() {
-        
-        
         flowLayout.do {
             $0.scrollDirection = .vertical
             $0.minimumInteritemSpacing = 0
             $0.minimumLineSpacing = 0
-            $0.sectionHeadersPinToVisibleBounds = true
         }
         baeminFeedCollectionView.backgroundColor = .clear
         

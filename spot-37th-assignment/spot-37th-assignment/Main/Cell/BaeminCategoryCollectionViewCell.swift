@@ -16,12 +16,16 @@ class BaeminCategoryCollectionViewCell: BaseCollectionViewCell {
     
     private let titleLabel = UILabel()
     private let imageView = UIImageView()
-    
-    private let categroyView = UIStackView()
+    private let categroyView = UIView()
     
     
     override func setUI() {
-        addSubview(categroyView)
+        
+        categroyView.addSubview(imageView)
+        [categroyView, titleLabel].forEach{
+            addSubview($0)
+        }
+        
         
     }
     override func setStyle() {
@@ -33,30 +37,38 @@ class BaeminCategoryCollectionViewCell: BaseCollectionViewCell {
         }
         
         imageView.do {
-            $0.image = UIImage(named: "sampleImage")
-            $0.backgroundColor = .baeminWhite
+            $0.contentMode = .scaleAspectFit
             $0.frame = CGRect(x: 0, y: 0, width: 54, height: 54)
         }
         
         categroyView.do {
-            $0.axis = .vertical
-            $0.spacing = 6
-            $0.alignment = .center
-            $0.addArrangedSubview(titleLabel)
-            $0.addArrangedSubview(imageView)
-            
+            $0.layer.cornerRadius = 20
+            $0.backgroundColor = .baeminGray200
+            $0.clipsToBounds = true
         }
         
     }
     override func setLayout() {
         categroyView.snp.makeConstraints {
-            $0.edges.equalToSuperview()
+            $0.centerY.centerX.equalToSuperview()
+            $0.height.width.equalTo(54)
+        }
+        imageView.snp.makeConstraints{
+            $0.centerY.centerX.equalToSuperview()
+            
+        }
+        titleLabel.snp.makeConstraints {
+            $0.top.equalTo(categroyView.snp.bottom).offset(6)
+            $0.centerX.equalToSuperview()
+        }
+        
+        contentView.snp.makeConstraints {
+            $0.edges.equalToSuperview().inset(4)
         }
     }
     
     func configure(title: String, image: UIImage?) {
         titleLabel.text = title
-        imageView.image = image
         
     }
 }

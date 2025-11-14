@@ -62,7 +62,8 @@ final class BaeminFeedBannerCell: BaseCollectionViewCell {
     
     override func setLayout() {
         bmartImageView.snp.makeConstraints {
-            $0.leading.top.equalToSuperview()
+            $0.top.equalToSuperview()
+            $0.leading.equalToSuperview().inset(16)
         }
         titleStackView.snp.makeConstraints {
             $0.top.equalTo(bmartImageView.snp.bottom)

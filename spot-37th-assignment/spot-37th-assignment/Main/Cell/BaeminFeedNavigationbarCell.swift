@@ -42,11 +42,13 @@ final class BaeminFeedNavigationbarCell: BaseCollectionViewCell {
     override func setLayout() {
         
         locationStackView.snp.makeConstraints {
-            $0.leading.top.bottom.equalToSuperview()
+            $0.top.bottom.equalToSuperview()
+            $0.leading.equalToSuperview().inset(16)
         }
         
         rightButtonsStackView.snp.makeConstraints{
-            $0.trailing.top.bottom.equalToSuperview()
+            $0.top.bottom.equalToSuperview()
+            $0.trailing.equalToSuperview().inset(16)
         }
     }
     

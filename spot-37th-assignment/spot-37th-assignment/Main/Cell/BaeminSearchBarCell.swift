@@ -56,7 +56,8 @@ final class BaeminSearchBarCell: BaseCollectionViewCell {
     
     override func setLayout() {
         searchTextField.snp.makeConstraints {
-            $0.top.trailing.leading.equalToSuperview()
+            $0.top.equalToSuperview()
+            $0.trailing.leading.equalToSuperview().inset(16)
             $0.centerY.equalToSuperview()
             $0.height.equalTo(40)
         }

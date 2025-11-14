@@ -13,7 +13,6 @@ enum BaeminFeedSection: Int, CaseIterable {
     case navigation = 0
     case searchBar
     case banner
-    case tabBar
     case category
     case brand
 }
@@ -56,9 +55,15 @@ final class BaeminFeedViewController: BaseViewController {
         
         rootView.baeminFeedCollectionView.register(BaeminFeedBannerCell.self, forCellWithReuseIdentifier: BaeminFeedBannerCell.identifier)
         
+        
         rootView.baeminFeedCollectionView.register(BaeminSearchBarCell.self, forCellWithReuseIdentifier: BaeminSearchBarCell.identifier)
         
+        rootView.baeminFeedCollectionView.register(BaeminCategoryHeaderView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: BaeminCategoryHeaderView.identifier)
+        
         rootView.baeminFeedCollectionView.register(BaeminCategoryCollectionViewCell.self, forCellWithReuseIdentifier: BaeminCategoryCollectionViewCell.identifier)
+        
+        rootView.baeminFeedCollectionView.register(BaeminCategoryFooterView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionFooter, withReuseIdentifier: BaeminCategoryFooterView.identifier)
+        
     }
     override func setAddTarget() {
         
@@ -88,10 +93,8 @@ extension BaeminFeedViewController: UICollectionViewDataSource {
             return 1
             
         case .category:
-            return 100
+            return baemincategory.count
         case .brand:
-            return 0
-        case .tabBar:
             return 0
         }
     }
@@ -111,13 +114,11 @@ extension BaeminFeedViewController: UICollectionViewDataSource {
             return rootView.baeminFeedCollectionView.dequeueReusableCell(withReuseIdentifier: BaeminSearchBarCell.identifier, for: indexPath)
         case .banner:
             return rootView.baeminFeedCollectionView.dequeueReusableCell(withReuseIdentifier: BaeminFeedBannerCell.identifier, for: indexPath)
-        case .tabBar:
-            return UICollectionViewCell()
         case .category:
             guard let cell = rootView.baeminFeedCollectionView.dequeueReusableCell(withReuseIdentifier: BaeminCategoryCollectionViewCell.identifier, for: indexPath) as? BaeminCategoryCollectionViewCell else {
                 return UICollectionViewCell()
             }
-//            cell.configure(title: baemincategory[indexPath.item].title, image: nil)
+            cell.configure(title: baemincategory[indexPath.item].title, image: nil)
             return cell
             
         case .brand:
@@ -129,13 +130,24 @@ extension BaeminFeedViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        
-        if indexPath.section == 1 {
-            guard let searchbar = rootView.baeminFeedCollectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: BaeminSearchBarCell.identifier, for: indexPath) as? BaeminSearchBarCell else {
-                return UICollectionReusableView()
+        if kind == UICollectionView.elementKindSectionHeader {
+            if indexPath.section == 3 {
+                guard let tabBar = rootView.baeminFeedCollectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: BaeminCategoryHeaderView.identifier, for: indexPath) as? BaeminCategoryHeaderView else {
+                    return UICollectionReusableView()
+                }
+                return tabBar
             }
-            return searchbar
         }
+        if kind == UICollectionView.elementKindSectionFooter {
+            if indexPath.section == 3 {
+                guard let footer = rootView.baeminFeedCollectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: BaeminCategoryFooterView.identifier, for: indexPath) as? BaeminCategoryFooterView else {
+                    return UICollectionReusableView()
+                }
+                return footer
+            }
+        }
+        
+        
         return UICollectionReusableView()
     }
   
@@ -157,8 +169,6 @@ extension BaeminFeedViewController: UICollectionViewDelegateFlowLayout {
             return CGSize(width: width, height: 40)
         case .banner:
             return CGSize(width: width, height: 38)
-        case .tabBar:
-            return CGSize(width: width, height: 24)
         case .category:
             let spacing: CGFloat = 16 * 2
             let itemWidth = (width - spacing) / 5
@@ -172,10 +182,43 @@ extension BaeminFeedViewController: UICollectionViewDelegateFlowLayout {
     // Hearder 설정
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         
+        if section == 3{
+            let width = rootView.baeminFeedCollectionView.bounds.width
+            return CGSize(width: width, height: 48)
+        }
+        
         return .zero
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets(top: 0, left: 16, bottom: 24, right: 16)
+    // footer 설정
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+        if section == 3{
+            let width = rootView.baeminFeedCollectionView.bounds.width
+            return CGSize(width: width, height: 54)
+        }
+        return .zero
     }
+    
+    func collectionView(
+           _ collectionView: UICollectionView,
+           layout collectionViewLayout: UICollectionViewLayout,
+           insetForSectionAt section: Int
+       ) -> UIEdgeInsets {
+           guard let sectionType = BaeminFeedSection(rawValue: section) else {
+               return .zero
+           }
+           
+           switch sectionType {
+           case .navigation:
+               return .zero
+           case .searchBar:
+               return UIEdgeInsets(top: 8, left: 0, bottom: 0, right: 0)
+           case .banner:
+               return UIEdgeInsets(top: 24, left: 0, bottom: 0, right: 0)
+           case .category:
+               return UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+           case .brand:
+               return .zero
+           }
+       }
 }
