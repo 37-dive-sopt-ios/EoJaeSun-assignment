@@ -9,24 +9,28 @@ import UIKit
 import Then
 import SnapKit
 
-final class LoginViewController: UIViewController {
+final class LoginViewController: BaseViewController {
+    
+    
+    let provider = NetworkProvider()
     
     private let emailTextField = UITextField()
     private let passwordTextField = UITextField()
     private lazy var loginButton = UIButton()
     private lazy var selectAccountButton = UIButton()
+    private lazy var toRegisterViewButton = UIButton()
     private lazy var clearButton = UIButton()
     private lazy var toggleButton = UIButton()
     private let rightButtonView = UIStackView()
     override func viewDidLoad() {
-    
+        
         super.viewDidLoad()
         self.hideKeyboardWhenTappedAround()
         setStyle()
         setHierarchy()
         setLayout()
         
-        }
+    }
 }
 
 extension LoginViewController {
@@ -47,7 +51,7 @@ extension LoginViewController {
         }
         
         self.passwordTextField.do {
-
+            
             $0.delegate = self
             $0.placeholder = "비밀번호"
             $0.font = .body_r_14
@@ -71,10 +75,21 @@ extension LoginViewController {
             $0.layer.cornerRadius = 4
             $0.isEnabled = false
         }
+        
+        
         self.selectAccountButton.do {
             $0.setTitle("계정 찾기", for: .normal)
             $0.setTitleColor(.baeminBlack, for: .normal)
             $0.setImage(UIImage(named: "baemin-ChevronRight"), for: .normal)
+            $0.titleLabel?.font = .body_r_14
+            $0.semanticContentAttribute = .forceRightToLeft
+        }
+        
+        toRegisterViewButton.do {
+            $0.setTitle("회원 가입", for: .normal)
+            $0.setTitleColor(.baeminBlack, for: .normal)
+            $0.setImage(UIImage(named: "baemin-ChevronRight"), for: .normal)
+            $0.addTarget(self, action: #selector(showRegisterView), for: .touchUpInside)
             $0.titleLabel?.font = .body_r_14
             $0.semanticContentAttribute = .forceRightToLeft
         }
@@ -98,7 +113,7 @@ extension LoginViewController {
         self.toggleButton.do {
             $0.setImage(UIImage(named: "baemin-eye-slash"), for: .normal)
             $0.frame = CGRect(x: 0, y: 0, width: 20, height: 20)
-    
+            
         }
         
     }
@@ -108,7 +123,7 @@ extension LoginViewController {
         rightButtonView.addArrangedSubview(clearButton)
         rightButtonView.addArrangedSubview(toggleButton)
         
-        [emailTextField,passwordTextField,loginButton, selectAccountButton,selectAccountButton].forEach {
+        [emailTextField,passwordTextField,loginButton, selectAccountButton,selectAccountButton,toRegisterViewButton].forEach {
             self.view.addSubview($0)
         }
         
@@ -143,41 +158,92 @@ extension LoginViewController {
             $0.width.equalTo(66)
             $0.height.equalTo(14)
         }
+        self.toRegisterViewButton.snp.makeConstraints {
+            $0.top.equalTo(self.selectAccountButton.snp.bottom).offset(32)
+            $0.leading.trailing.equalToSuperview().inset(16)
+            $0.width.equalTo(66)
+            $0.height.equalTo(14)
+        }
+        
+        
         
         
     }
+    
+    
+    
+    /// 로그인 API 호출
+    @MainActor
+    private func performLogin(username: String, password: String) async {
+        loadingIndicator.startAnimating()
+        
+        do {
+            // UserAPI의 convenience method 사용
+            let response = try await UserAPI.performLogin(
+                username: username,
+                password: password,
+                provider: provider
+            )
+            
+            // 성공 시 Welcome 화면으로 이동
+            showAlert(title: "로그인 성공", message: response.message) { [weak self] in
+                self?.navigateToWelcome(userId: response.userId, userName: username)
+            }
+        } catch let error as NetworkError {
+            // 콘솔에 상세 에러 로그 출력
+            print("🚨 [Login Error] \(error.detailedDescription)")
+            // 사용자에게는 친절한 메시지 표시
+            showAlert(title: "로그인 실패", message: error.localizedDescription)
+        } catch {
+            print("🚨 [Login Unknown Error] \(error)")
+            showAlert(title: "로그인 실패", message: error.localizedDescription)
+        }
+        
+        loadingIndicator.stopAnimating()
+    }
+    
     
     @objc func loginButtonDidTap() {
         guard let emailText = emailTextField.text else { return }
         guard let passwordText = passwordTextField.text else { return }
         
         
-        
-        if isValidEmail(email: emailText) {
+// 잠시 해제!
+//        if isValidEmail(email: emailText) {
             if !emailText.isEmpty && !passwordText.isEmpty {
-                let welcomeViewController = WelcomeViewController()
-                
-                guard let name = emailText.split(separator: "@").first else { return }
-                welcomeViewController.setLabelText(name: String(name))
-                self.navigationController?.pushViewController(welcomeViewController, animated: true)
+                Task{
+                    await performLogin(username: emailText, password: passwordText)
+                }
             }
-        } else {
-            let alert = UIAlertController(title: "알림", message: "이메일 형식이 달라요", preferredStyle: .alert)
-
-            let okAction = UIAlertAction(title: "확인", style: .default)
-            alert.addAction(okAction)
-
-            present(alert, animated: true, completion: nil)
-        }
+//        } else {
+//            let alert = UIAlertController(title: "알림", message: "이메일 형식이 달라요", preferredStyle: .alert)
+//            
+//            let okAction = UIAlertAction(title: "확인", style: .default)
+//            alert.addAction(okAction)
+//            
+//            present(alert, animated: true, completion: nil)
+//        }
     }
     
-    func isValidEmail(email: String) -> Bool {
+    @objc func showRegisterView() {
+        let registerView = RegisterViewController()
+        if let vc = navigationController?.sheetPresentationController {
+            vc.detents = [.medium(), .large()]
+        }
+        present(registerView, animated: true)
+    }
+    
+    
+    private func isValidEmail(email: String) -> Bool {
         let emailRegex = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}"
         let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
         return emailPredicate.evaluate(with: email)
     }
     
-
+    private func navigateToWelcome(userId: Int, userName: String) {
+        let welcomeVC = WelcomeViewController()
+        navigationController?.pushViewController(welcomeVC, animated: true)
+    }
     
 }
 
@@ -220,8 +286,6 @@ extension LoginViewController: UITextFieldDelegate {
                 clearButton.isHidden = false
             }
         }
-        
-       
         
         clearButton.addTarget(self, action: #selector(clearButtonAction), for: .touchUpInside)
         toggleButton.addTarget(self, action: #selector(toggleButtonAction), for: .touchUpInside)
