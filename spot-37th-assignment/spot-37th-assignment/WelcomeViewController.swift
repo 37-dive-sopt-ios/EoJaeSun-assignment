@@ -98,7 +98,7 @@ extension WelcomeViewController {
     }
     
     @objc func homeButtonDidTap() {
-        let mainVC = UINavigationController(rootViewController: BaeminFeedViewController())
+        let mainVC = UINavigationController(rootViewController: TabViewController())
            
         if let window = view.window {
             window.rootViewController = mainVC

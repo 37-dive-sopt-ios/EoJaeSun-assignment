@@ -19,7 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         guard let windowScene = (scene as? UIWindowScene) else { return }
         let window = UIWindow(windowScene: windowScene)
         
-        let viewController = UINavigationController(rootViewController: BaeminFeedViewController())
+        let viewController = UINavigationController(rootViewController: TabViewController())
         
         window.rootViewController = viewController
         

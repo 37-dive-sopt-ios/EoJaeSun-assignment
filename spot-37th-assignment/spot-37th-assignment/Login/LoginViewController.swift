@@ -221,8 +221,6 @@ extension LoginViewController: UITextFieldDelegate {
             }
         }
         
-       
-        
         clearButton.addTarget(self, action: #selector(clearButtonAction), for: .touchUpInside)
         toggleButton.addTarget(self, action: #selector(toggleButtonAction), for: .touchUpInside)
     }
