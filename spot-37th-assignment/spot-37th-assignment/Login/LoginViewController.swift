@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 import Then
 import SnapKit
 
@@ -18,18 +19,69 @@ final class LoginViewController: UIViewController {
     private lazy var clearButton = UIButton()
     private lazy var toggleButton = UIButton()
     private let rightButtonView = UIStackView()
+    
+    private let viewModel = LoginViewModel()
+    private var cancellables = Set<AnyCancellable>()
+    
+    private let emailTextSubject = CurrentValueSubject<String, Never>("")
+    private let passwordTextSubject = CurrentValueSubject<String, Never>("")
+    
     override func viewDidLoad() {
     
         super.viewDidLoad()
         self.hideKeyboardWhenTappedAround()
+        bindViewModel()
         setStyle()
         setHierarchy()
         setLayout()
-        
         }
+    
+}
+
+// MARK: - bindViewMdeol
+
+extension LoginViewController {
+    
+    private func bindViewModel() {
+        
+        let input = LoginViewModel.Input(
+            emailText: emailTextSubject.eraseToAnyPublisher(),
+            passwordText: passwordTextSubject.eraseToAnyPublisher()
+        )
+        
+        let output = viewModel.transform(input: input)
+        
+        output.isLoginButtonEnabled
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] isEnabled in
+                guard let self = self else { return }
+                
+                if isEnabled {
+                    self.loginButton.backgroundColor = .baeminMint500
+                    self.loginButton.isEnabled = true
+                } else {
+                    self.loginButton.backgroundColor = .baeminGray200
+                    self.loginButton.isEnabled = false
+                }
+            }
+            .store(in: &cancellables)
+        
+        emailTextField.textPublisher
+            .sink { [weak self] text in
+                self?.emailTextSubject.send(text)
+            }
+            .store(in: &cancellables)
+        
+        passwordTextField.textPublisher
+            .sink { [weak self] text in
+                self?.passwordTextSubject.send(text)
+            }
+            .store(in: &cancellables)
+    }
 }
 
 extension LoginViewController {
+    
     func setStyle() {
         self.view.backgroundColor = .white
         self.navigationItem.title = "이메일 또는 아이디로 계속"
@@ -116,7 +168,6 @@ extension LoginViewController {
     
     func setLayout() {
         
-        
         self.emailTextField.snp.makeConstraints {
             $0.top.equalToSuperview().offset(101)
             $0.leading.trailing.equalToSuperview().inset(16)
@@ -146,6 +197,8 @@ extension LoginViewController {
         
         
     }
+    
+    
     
     @objc func loginButtonDidTap() {
         guard let emailText = emailTextField.text else { return }
@@ -182,17 +235,12 @@ extension LoginViewController {
 }
 
 extension LoginViewController: UITextFieldDelegate {
+    
     func textFieldDidEndEditing(_ textField: UITextField) {
         textField.layer.borderColor = UIColor.baeminGray200.cgColor
         textField.layer.borderWidth = 1
         
-        guard let emailText = emailTextField.text else { return }
-        guard let passwordText = passwordTextField.text else { return }
-        
-        if !emailText.isEmpty && !passwordText.isEmpty {
-            loginButton.backgroundColor = .baeminMint500
-            loginButton.isEnabled = true
-        }
+
     }
     
     func textField(_ textField: UITextField, shouldChangeCharactersInRanges ranges: [NSValue], replacementString string: String) -> Bool {
